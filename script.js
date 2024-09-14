@@ -7,20 +7,57 @@ function saveData(key, data) {
     localStorage.setItem(key, JSON.stringify(data));
 }
 
-// ฟังก์ชันสำหรับอัปเดตแดชบอร์ด
-function updateDashboard() {
-    const tenants = getData('tenants');
-    const properties = getData('properties');
-    const payments = getData('payments');
-    const overdueTenants = tenants.filter(isTenantOverdue);
+// ฟังก์ชันสำหรับการส่งออกข้อมูล
+function exportData() {
+    const data = {
+        tenants: getData('tenants'),
+        properties: getData('properties'),
+        payments: getData('payments')
+    };
+    const dataStr = JSON.stringify(data, null, 2);
+    const blob = new Blob([dataStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = "rental_data.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
 
-    document.getElementById('totalTenants').textContent = tenants.length;
-    document.getElementById('totalProperties').textContent = properties.length;
+// ฟังก์ชันสำหรับการนำเข้าข้อมูล
+function importData(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = function(e) {
+        const content = e.target.result;
+        try {
+            const data = JSON.parse(content);
+            if (data.tenants && data.properties && data.payments) {
+                saveData('tenants', data.tenants);
+                saveData('properties', data.properties);
+                saveData('payments', data.payments);
+                alert('นำเข้าข้อมูลสำเร็จ');
+                location.reload();
+            } else {
+                alert('รูปแบบไฟล์ไม่ถูกต้อง');
+            }
+        } catch (error) {
+            alert('เกิดข้อผิดพลาดในการนำเข้าข้อมูล');
+        }
+    };
+    reader.readAsText(file);
+}
 
-    let monthlyIncome = payments.filter(isPaymentThisMonth).reduce((sum, payment) => sum + payment.amount, 0);
-    document.getElementById('monthlyIncome').textContent = `${monthlyIncome} บาท`;
-
-    document.getElementById('overdueTenants').textContent = overdueTenants.length;
+// ฟังก์ชันสำหรับจัดรูปแบบวันที่เป็น dd/mm/yyyy
+function formatDate(date) {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}/${month}/${year}`;
 }
 
 // ฟังก์ชันตรวจสอบว่าการชำระเงินเป็นของเดือนนี้หรือไม่
@@ -47,11 +84,59 @@ function isTenantOverdue(tenant) {
     }
 }
 
+// ฟังก์ชันสำหรับโหลดตัวเลือกสถานที่เช่า
+function loadPropertyOptions() {
+    const properties = getData('properties');
+    const propertySelect = document.getElementById('tenantProperty');
+    if (propertySelect) {
+        propertySelect.innerHTML = '';
+        properties.forEach(property => {
+            const option = document.createElement('option');
+            option.value = property.id;
+            option.textContent = property.name;
+            propertySelect.appendChild(option);
+        });
+    }
+}
+
+// ฟังก์ชันสำหรับโหลดตัวเลือกผู้เช่า
+function loadTenantOptions() {
+    const tenants = getData('tenants');
+    const tenantSelect = document.getElementById('paymentTenant');
+    if (tenantSelect) {
+        tenantSelect.innerHTML = '';
+        tenants.forEach(tenant => {
+            const option = document.createElement('option');
+            option.value = tenant.id;
+            option.textContent = tenant.name;
+            tenantSelect.appendChild(option);
+        });
+    }
+}
+
+// ฟังก์ชันสำหรับอัปเดตแดชบอร์ด
+function updateDashboard() {
+    const tenants = getData('tenants');
+    const properties = getData('properties');
+    const payments = getData('payments');
+    const overdueTenants = tenants.filter(isTenantOverdue);
+
+    document.getElementById('totalTenants').textContent = tenants.length;
+    document.getElementById('totalProperties').textContent = properties.length;
+
+    let monthlyIncome = payments.filter(isPaymentThisMonth).reduce((sum, payment) => sum + payment.amount, 0);
+    document.getElementById('monthlyIncome').textContent = `${monthlyIncome} บาท`;
+
+    document.getElementById('overdueTenants').textContent = overdueTenants.length;
+}
+
 // ฟังก์ชันสำหรับจัดการผู้เช่า
 function displayTenants() {
     const tenants = getData('tenants');
     const properties = getData('properties');
     const tenantTable = document.getElementById('tenantTable');
+    if (!tenantTable) return;
+    
     tenantTable.innerHTML = '';
 
     tenants.forEach((tenant, index) => {
@@ -74,7 +159,7 @@ function displayTenants() {
         tr.appendChild(tdRent);
 
         const tdStartDate = document.createElement('td');
-        tdStartDate.textContent = tenant.startDate;
+        tdStartDate.textContent = formatDate(tenant.startDate);
         tr.appendChild(tdStartDate);
 
         const tdActions = document.createElement('td');
@@ -97,6 +182,8 @@ function displayTenants() {
 function addTenant() {
     document.getElementById('tenantFormTitle').textContent = 'เพิ่มผู้เช่า';
     document.getElementById('tenantName').value = '';
+    document.getElementById('tenantIdCard').value = '';
+    document.getElementById('tenantPhone').value = '';
     document.getElementById('tenantRent').value = '';
     document.getElementById('tenantStartDate').value = '';
     document.getElementById('tenantProperty').value = '';
@@ -109,6 +196,8 @@ function saveNewTenant() {
     const tenant = {
         id: Date.now(),
         name: document.getElementById('tenantName').value,
+        idCard: document.getElementById('tenantIdCard').value,
+        phone: document.getElementById('tenantPhone').value,
         propertyId: parseInt(document.getElementById('tenantProperty').value),
         rent: parseFloat(document.getElementById('tenantRent').value),
         startDate: document.getElementById('tenantStartDate').value
@@ -124,6 +213,8 @@ function editTenant(index) {
     const tenant = tenants[index];
     document.getElementById('tenantFormTitle').textContent = 'แก้ไขผู้เช่า';
     document.getElementById('tenantName').value = tenant.name;
+    document.getElementById('tenantIdCard').value = tenant.idCard;
+    document.getElementById('tenantPhone').value = tenant.phone;
     document.getElementById('tenantRent').value = tenant.rent;
     document.getElementById('tenantStartDate').value = tenant.startDate;
     document.getElementById('tenantProperty').value = tenant.propertyId;
@@ -136,6 +227,8 @@ function saveEditedTenant(index) {
     tenants[index] = {
         ...tenants[index],
         name: document.getElementById('tenantName').value,
+        idCard: document.getElementById('tenantIdCard').value,
+        phone: document.getElementById('tenantPhone').value,
         propertyId: parseInt(document.getElementById('tenantProperty').value),
         rent: parseFloat(document.getElementById('tenantRent').value),
         startDate: document.getElementById('tenantStartDate').value
@@ -159,6 +252,8 @@ function displayProperties() {
     const properties = getData('properties');
     const tenants = getData('tenants');
     const propertyTable = document.getElementById('propertyTable');
+    if (!propertyTable) return;
+    
     propertyTable.innerHTML = '';
 
     properties.forEach((property, index) => {
@@ -246,81 +341,14 @@ function deleteProperty(index) {
     }
 }
 
-// ฟังก์ชันสำหรับการนำเข้าและส่งออกข้อมูล
-function exportData() {
-    const data = {
-        tenants: getData('tenants'),
-        properties: getData('properties'),
-        payments: getData('payments')
-    };
-    const dataStr = JSON.stringify(data, null, 2); // เพิ่มการจัดรูปแบบ JSON
-    const blob = new Blob([dataStr], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = "rental_data.json";
-    document.body.appendChild(a); // จำเป็นสำหรับ Firefox
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
-
-function importData(event) {
-    const file = event.target.files[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = function(e) {
-        const content = e.target.result;
-        try {
-            const data = JSON.parse(content);
-            if (data.tenants && data.properties && data.payments) {
-                saveData('tenants', data.tenants);
-                saveData('properties', data.properties);
-                saveData('payments', data.payments);
-                alert('นำเข้าข้อมูลสำเร็จ');
-                location.reload();
-            } else {
-                alert('รูปแบบไฟล์ไม่ถูกต้อง');
-            }
-        } catch (error) {
-            alert('เกิดข้อผิดพลาดในการนำเข้าข้อมูล');
-        }
-    };
-    reader.readAsText(file);
-}
-
-// ฟังก์ชันสำหรับโหลดข้อมูลสถานที่เช่าในฟอร์มผู้เช่า
-function loadPropertyOptions() {
-    const properties = getData('properties');
-    const select = document.getElementById('tenantProperty');
-    select.innerHTML = '';
-    properties.forEach(property => {
-        const option = document.createElement('option');
-        option.value = property.id;
-        option.textContent = property.name;
-        select.appendChild(option);
-    });
-}
-
-// ฟังก์ชันสำหรับโหลดข้อมูลผู้เช่าในฟอร์มการชำระเงิน
-function loadTenantOptions() {
-    const tenants = getData('tenants');
-    const select = document.getElementById('paymentTenant');
-    select.innerHTML = '';
-    tenants.forEach(tenant => {
-        const option = document.createElement('option');
-        option.value = tenant.id;
-        option.textContent = tenant.name;
-        select.appendChild(option);
-    });
-}
-
 // ฟังก์ชันสำหรับจัดการการชำระเงิน
 function displayPayments() {
     const payments = getData('payments');
     const tenants = getData('tenants');
     const properties = getData('properties');
     const paymentTable = document.getElementById('paymentTable');
+    if (!paymentTable) return;
+    
     paymentTable.innerHTML = '';
 
     payments.forEach((payment, index) => {
@@ -338,7 +366,7 @@ function displayPayments() {
         tr.appendChild(tdProperty);
 
         const tdDate = document.createElement('td');
-        tdDate.textContent = payment.date;
+        tdDate.textContent = formatDate(payment.date);
         tr.appendChild(tdDate);
 
         const tdAmount = document.createElement('td');
@@ -425,6 +453,8 @@ function displayOverdueTenants() {
     const tenants = getData('tenants');
     const properties = getData('properties');
     const overdueTable = document.getElementById('overdueTable');
+    if (!overdueTable) return;
+
     overdueTable.innerHTML = '';
 
     const overdueTenants = tenants.filter(isTenantOverdue);
@@ -432,7 +462,6 @@ function displayOverdueTenants() {
     overdueTenants.forEach(tenant => {
         const tr = document.createElement('tr');
 
-        // แสดงชื่อผู้เช่าเป็นลิงก์ไปยังรายละเอียดผู้เช่า
         const tdName = document.createElement('td');
         const tenantLink = document.createElement('a');
         tenantLink.href = `tenant-details.html?id=${tenant.id}`;
@@ -451,7 +480,7 @@ function displayOverdueTenants() {
         dueDate.setMonth(dueDate.getMonth() + monthsElapsed);
 
         const tdDueDate = document.createElement('td');
-        tdDueDate.textContent = dueDate.toISOString().split('T')[0];
+        tdDueDate.textContent = formatDate(dueDate);
         tr.appendChild(tdDueDate);
 
         const tdAmount = document.createElement('td');
@@ -474,32 +503,106 @@ function displayTenantDetails() {
     if (tenant) {
         const property = properties.find(p => p.id === tenant.propertyId);
         const tenantDetailsDiv = document.getElementById('tenantDetails');
-        tenantDetailsDiv.innerHTML = `
-            <p><strong>ชื่อผู้เช่า:</strong> ${tenant.name}</p>
-            <p><strong>สถานที่เช่า:</strong> ${property ? property.name : 'N/A'}</p>
-            <p><strong>ค่าเช่า (บาท/เดือน):</strong> ${tenant.rent}</p>
-            <p><strong>วันที่เริ่มสัญญา:</strong> ${tenant.startDate}</p>
-        `;
+        if (tenantDetailsDiv) {
+            tenantDetailsDiv.innerHTML = `
+                <p><strong>ชื่อผู้เช่า:</strong> ${tenant.name}</p>
+                <p><strong>เลขบัตรประชาชน:</strong> ${tenant.idCard}</p>
+                <p><strong>เบอร์โทรศัพท์:</strong> ${tenant.phone}</p>
+                <p><strong>สถานที่เช่า:</strong> ${property ? property.name : 'N/A'}</p>
+                <p><strong>ค่าเช่า (บาท/เดือน):</strong> ${tenant.rent}</p>
+                <p><strong>วันที่เริ่มสัญญา:</strong> ${formatDate(tenant.startDate)}</p>
+            `;
+        }
 
         const tenantPayments = payments.filter(p => p.tenantId === tenantId);
         const paymentHistoryTable = document.getElementById('tenantPaymentHistory');
-        paymentHistoryTable.innerHTML = '';
+        if (paymentHistoryTable) {
+            paymentHistoryTable.innerHTML = '';
 
-        tenantPayments.forEach(payment => {
-            const tr = document.createElement('tr');
-            const tdDate = document.createElement('td');
-            tdDate.textContent = payment.date;
-            tr.appendChild(tdDate);
+            tenantPayments.forEach(payment => {
+                const tr = document.createElement('tr');
+                const tdDate = document.createElement('td');
+                tdDate.textContent = formatDate(payment.date);
+                tr.appendChild(tdDate);
 
-            const tdAmount = document.createElement('td');
-            tdAmount.textContent = payment.amount;
-            tr.appendChild(tdAmount);
+                const tdAmount = document.createElement('td');
+                tdAmount.textContent = payment.amount;
+                tr.appendChild(tdAmount);
 
-            paymentHistoryTable.appendChild(tr);
-        });
+                paymentHistoryTable.appendChild(tr);
+            });
+        }
     } else {
         alert('ไม่พบข้อมูลผู้เช่า');
     }
+}
+
+// ฟังก์ชันสำหรับสร้างรายงานรายได้
+function generateIncomeReport() {
+    const payments = getData('payments');
+    const reportContent = document.getElementById('reportContent');
+    
+    // สร้างรายงานรายได้รายเดือน
+    const monthlyIncome = {};
+    payments.forEach(payment => {
+        const date = new Date(payment.date);
+        const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
+        if (!monthlyIncome[monthYear]) {
+            monthlyIncome[monthYear] = 0;
+        }
+        monthlyIncome[monthYear] += payment.amount;
+    });
+
+    let report = '<h3>รายงานรายได้</h3><table><tr><th>เดือน/ปี</th><th>รายได้ (บาท)</th></tr>';
+    for (const [monthYear, income] of Object.entries(monthlyIncome)) {
+        report += `<tr><td>${monthYear}</td><td>${income}</td></tr>`;
+    }
+    report += '</table>';
+
+    reportContent.innerHTML = report;
+}
+
+// ฟังก์ชันสำหรับสร้างรายงานผู้เช่าที่ค้างชำระ
+function generateOverdueReport() {
+    const tenants = getData('tenants');
+    const properties = getData('properties');
+    const reportContent = document.getElementById('reportContent');
+
+    const overdueTenants = tenants.filter(isTenantOverdue);
+
+    let report = '<h3>รายงานผู้เช่าที่ค้างชำระ</h3><table><tr><th>ชื่อผู้เช่า</th><th>สถานที่เช่า</th><th>จำนวนเงินที่ค้าง (บาท)</th></tr>';
+    overdueTenants.forEach(tenant => {
+        const property = properties.find(p => p.id === tenant.propertyId);
+        report += `<tr><td>${tenant.name}</td><td>${property ? property.name : 'N/A'}</td><td>${tenant.rent}</td></tr>`;
+    });
+    report += '</table>';
+
+    reportContent.innerHTML = report;
+}
+
+// ฟังก์ชันสำหรับสร้างรายงานอัตราการเช่า
+function generateOccupancyReport() {
+    const properties = getData('properties');
+    const tenants = getData('tenants');
+    const reportContent = document.getElementById('reportContent');
+
+    const totalProperties = properties.length;
+    const occupiedProperties = tenants.length;
+    const occupancyRate = (occupiedProperties / totalProperties) * 100;
+
+    let report = `<h3>รายงานอัตราการเช่า</h3>
+                  <p>จำนวนสถานที่เช่าทั้งหมด: ${totalProperties}</p>
+                  <p>จำนวนสถานที่เช่าที่มีผู้เช่า: ${occupiedProperties}</p>
+                  <p>อัตราการเช่า: ${occupancyRate.toFixed(2)}%</p>`;
+
+    reportContent.innerHTML = report;
+}
+
+// เพิ่ม event listeners สำหรับปุ่มรายงานต่างๆ
+function initReportButtons() {
+    document.getElementById('incomeReportBtn').addEventListener('click', generateIncomeReport);
+    document.getElementById('overdueReportBtn').addEventListener('click', generateOverdueReport);
+    document.getElementById('occupancyReportBtn').addEventListener('click', generateOccupancyReport);
 }
 
 // เริ่มต้นการทำงาน
@@ -519,33 +622,18 @@ window.onload = function() {
         loadPropertyOptions();
         document.getElementById('addTenantBtn').onclick = addTenant;
         document.getElementById('closeTenantForm').onclick = () => document.getElementById('tenantForm').style.display = 'none';
-        window.onclick = (event) => {
-            if (event.target == document.getElementById('tenantForm')) {
-                document.getElementById('tenantForm').style.display = 'none';
-            }
-        };
     }
 
     if (page === 'properties.html') {
         displayProperties();
         document.getElementById('addPropertyBtn').onclick = addProperty;
         document.getElementById('closePropertyForm').onclick = () => document.getElementById('propertyForm').style.display = 'none';
-        window.onclick = (event) => {
-            if (event.target == document.getElementById('propertyForm')) {
-                document.getElementById('propertyForm').style.display = 'none';
-            }
-        };
     }
 
     if (page === 'payments.html') {
         displayPayments();
         document.getElementById('addPaymentBtn').onclick = addPayment;
         document.getElementById('closePaymentForm').onclick = () => document.getElementById('paymentForm').style.display = 'none';
-        window.onclick = (event) => {
-            if (event.target == document.getElementById('paymentForm')) {
-                document.getElementById('paymentForm').style.display = 'none';
-            }
-        };
     }
 
     if (page === 'overdue.html') {
@@ -559,4 +647,18 @@ window.onload = function() {
     if (page === 'reports.html') {
         // สามารถเพิ่มฟังก์ชันสำหรับสร้างรายงานเพิ่มเติมได้ที่นี่
     }
+	
+	if (page === 'reports.html') {
+        initReportButtons();
+    }
+
+    // Event listener สำหรับการปิดโมดัลเมื่อคลิกนอกกรอบ
+    window.onclick = (event) => {
+        const modals = document.getElementsByClassName('modal');
+        for (let modal of modals) {
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    };
 };

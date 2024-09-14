@@ -169,3 +169,31 @@ textarea {
         font-size: 16px;
     }
 }
+
+/* สไตล์สำหรับหน้ารายงาน */
+#reportOptions {
+    margin-bottom: 20px;
+}
+
+#reportOptions button {
+    margin-right: 10px;
+}
+
+#reportContent table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#reportContent th, #reportContent td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
+}
+
+#reportContent th {
+    background-color: #f2f2f2;
+}
+
+#reportContent tr:nth-child(even) {
+    background-color: #f9f9f9;
+}

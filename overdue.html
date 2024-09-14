@@ -2,10 +2,9 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <title>ระบบจัดการบ้านเช่า - ผู้ค้างชำระ</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการบ้านเช่า - ผู้เช่าที่ค้างชำระ</title>
     <link rel="stylesheet" href="style.css">
-    <!-- เพิ่ม meta viewport สำหรับการแสดงผลบนสมาร์ทโฟน -->
-    <meta name="viewport" content="width=device-width, initial-scale=1">
 </head>
 <body>
     <header>
@@ -21,6 +20,7 @@
             </ul>
         </nav>
     </header>
+
     <main>
         <h2>ผู้เช่าที่ค้างชำระ</h2>
         <table>
@@ -28,15 +28,16 @@
                 <tr>
                     <th>ชื่อผู้เช่า</th>
                     <th>สถานที่เช่า</th>
-                    <th>วันที่ครบกำหนด</th>
+                    <th>วันที่ครบกำหนดจ่าย</th>
                     <th>จำนวนเงินที่ค้าง (บาท)</th>
                 </tr>
             </thead>
             <tbody id="overdueTable">
-                <!-- รายการผู้ค้างชำระจะแสดงที่นี่ -->
+                <!-- ข้อมูลผู้เช่าที่ค้างชำระจะถูกเพิ่มที่นี่โดย JavaScript -->
             </tbody>
         </table>
     </main>
+
     <script src="script.js"></script>
 </body>
 </html>

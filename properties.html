@@ -2,8 +2,8 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>ระบบจัดการบ้านเช่า - สถานที่เช่า</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการบ้านเช่า - จัดการสถานที่เช่า</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -20,6 +20,7 @@
             </ul>
         </nav>
     </header>
+
     <main>
         <h2>จัดการสถานที่เช่า</h2>
         <button id="addPropertyBtn">เพิ่มสถานที่เช่า</button>
@@ -33,22 +34,25 @@
                 </tr>
             </thead>
             <tbody id="propertyTable">
-                <!-- รายการสถานที่เช่าจะแสดงที่นี่ -->
+                <!-- ข้อมูลสถานที่เช่าจะถูกเพิ่มที่นี่โดย JavaScript -->
             </tbody>
         </table>
     </main>
-    <!-- ฟอร์มสำหรับเพิ่ม/แก้ไขสถานที่เช่า -->
+
     <div id="propertyForm" class="modal">
         <div class="modal-content">
             <span class="close" id="closePropertyForm">&times;</span>
             <h2 id="propertyFormTitle">เพิ่มสถานที่เช่า</h2>
-            <label>ชื่อสถานที่:</label>
-            <input type="text" id="propertyName">
-            <label>ที่อยู่:</label>
-            <textarea id="propertyAddress"></textarea>
-            <button id="saveProperty">บันทึก</button>
+            <form id="propertyFormElement">
+                <label for="propertyName">ชื่อสถานที่:</label>
+                <input type="text" id="propertyName" required>
+                <label for="propertyAddress">ที่อยู่:</label>
+                <input type="text" id="propertyAddress" required>
+                <button type="button" id="saveProperty">บันทึก</button>
+            </form>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>

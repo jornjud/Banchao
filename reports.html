@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบจัดการบ้านเช่า - รายงาน</title>
     <link rel="stylesheet" href="style.css">
 </head>
@@ -20,13 +20,19 @@
             </ul>
         </nav>
     </header>
+
     <main>
         <h2>รายงาน</h2>
-        <!-- ส่วนของรายงานเพิ่มเติม -->
-        <div id="reportsContent">
-            <!-- รายงานจะแสดงที่นี่ -->
+        <div id="reportOptions">
+            <button id="incomeReportBtn">รายงานรายได้</button>
+            <button id="overdueReportBtn">รายงานผู้เช่าที่ค้างชำระ</button>
+            <button id="occupancyReportBtn">รายงานอัตราการเช่า</button>
+        </div>
+        <div id="reportContent">
+            <!-- เนื้อหารายงานจะถูกเพิ่มที่นี่โดย JavaScript -->
         </div>
     </main>
+
     <script src="script.js"></script>
 </body>
 </html>
