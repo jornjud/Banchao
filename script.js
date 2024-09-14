@@ -432,8 +432,12 @@ function displayOverdueTenants() {
     overdueTenants.forEach(tenant => {
         const tr = document.createElement('tr');
 
+        // แสดงชื่อผู้เช่าเป็นลิงก์ไปยังรายละเอียดผู้เช่า
         const tdName = document.createElement('td');
-        tdName.textContent = tenant.name;
+        const tenantLink = document.createElement('a');
+        tenantLink.href = `tenant-details.html?id=${tenant.id}`;
+        tenantLink.textContent = tenant.name;
+        tdName.appendChild(tenantLink);
         tr.appendChild(tdName);
 
         const property = properties.find(p => p.id === tenant.propertyId);
