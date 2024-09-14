@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ระบบจัดการบ้านเช่า - สถานที่เช่า</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>ระบบจัดการบ้านเช่า</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">แดชบอร์ด</a></li>
+                <li><a href="tenants.html">ผู้เช่า</a></li>
+                <li><a href="properties.html">สถานที่เช่า</a></li>
+                <li><a href="payments.html">การชำระเงิน</a></li>
+                <li><a href="overdue.html">ค้างชำระ</a></li>
+                <li><a href="reports.html">รายงาน</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>จัดการสถานที่เช่า</h2>
+        <button id="addPropertyBtn">เพิ่มสถานที่เช่า</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>ชื่อสถานที่</th>
+                    <th>ที่อยู่</th>
+                    <th>ผู้เช่า</th>
+                    <th>การจัดการ</th>
+                </tr>
+            </thead>
+            <tbody id="propertyTable">
+                <!-- รายการสถานที่เช่าจะแสดงที่นี่ -->
+            </tbody>
+        </table>
+    </main>
+    <!-- ฟอร์มสำหรับเพิ่ม/แก้ไขสถานที่เช่า -->
+    <div id="propertyForm" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closePropertyForm">&times;</span>
+            <h2 id="propertyFormTitle">เพิ่มสถานที่เช่า</h2>
+            <label>ชื่อสถานที่:</label>
+            <input type="text" id="propertyName">
+            <label>ที่อยู่:</label>
+            <textarea id="propertyAddress"></textarea>
+            <button id="saveProperty">บันทึก</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

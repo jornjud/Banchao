@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ระบบจัดการบ้านเช่า - ผู้เช่า</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>ระบบจัดการบ้านเช่า</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">แดชบอร์ด</a></li>
+                <li><a href="tenants.html">ผู้เช่า</a></li>
+                <li><a href="properties.html">สถานที่เช่า</a></li>
+                <li><a href="payments.html">การชำระเงิน</a></li>
+                <li><a href="overdue.html">ค้างชำระ</a></li>
+                <li><a href="reports.html">รายงาน</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>จัดการผู้เช่า</h2>
+        <button id="addTenantBtn">เพิ่มผู้เช่า</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>ชื่อผู้เช่า</th>
+                    <th>สถานที่เช่า</th>
+                    <th>ค่าเช่า (บาท/เดือน)</th>
+                    <th>วันที่เริ่มสัญญา</th>
+                    <th>การจัดการ</th>
+                </tr>
+            </thead>
+            <tbody id="tenantTable">
+                <!-- รายการผู้เช่าจะแสดงที่นี่ -->
+            </tbody>
+        </table>
+    </main>
+    <!-- ฟอร์มสำหรับเพิ่ม/แก้ไขผู้เช่า -->
+    <div id="tenantForm" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeTenantForm">&times;</span>
+            <h2 id="tenantFormTitle">เพิ่มผู้เช่า</h2>
+            <label>ชื่อผู้เช่า:</label>
+            <input type="text" id="tenantName">
+            <label>สถานที่เช่า:</label>
+            <select id="tenantProperty">
+                <!-- รายการสถานที่เช่าจะแสดงที่นี่ -->
+            </select>
+            <label>ค่าเช่า (บาท/เดือน):</label>
+            <input type="number" id="tenantRent">
+            <label>วันที่เริ่มสัญญา:</label>
+            <input type="date" id="tenantStartDate">
+            <button id="saveTenant">บันทึก</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

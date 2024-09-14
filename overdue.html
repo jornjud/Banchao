@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ระบบจัดการบ้านเช่า - ผู้ค้างชำระ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>ระบบจัดการบ้านเช่า</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">แดชบอร์ด</a></li>
+                <li><a href="tenants.html">ผู้เช่า</a></li>
+                <li><a href="properties.html">สถานที่เช่า</a></li>
+                <li><a href="payments.html">การชำระเงิน</a></li>
+                <li><a href="overdue.html">ค้างชำระ</a></li>
+                <li><a href="reports.html">รายงาน</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>ผู้เช่าที่ค้างชำระ</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ชื่อผู้เช่า</th>
+                    <th>สถานที่เช่า</th>
+                    <th>วันที่ครบกำหนด</th>
+                    <th>จำนวนเงินที่ค้าง (บาท)</th>
+                </tr>
+            </thead>
+            <tbody id="overdueTable">
+                <!-- รายการผู้ค้างชำระจะแสดงที่นี่ -->
+            </tbody>
+        </table>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

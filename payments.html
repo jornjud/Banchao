@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ระบบจัดการบ้านเช่า - การชำระเงิน</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>ระบบจัดการบ้านเช่า</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">แดชบอร์ด</a></li>
+                <li><a href="tenants.html">ผู้เช่า</a></li>
+                <li><a href="properties.html">สถานที่เช่า</a></li>
+                <li><a href="payments.html">การชำระเงิน</a></li>
+                <li><a href="overdue.html">ค้างชำระ</a></li>
+                <li><a href="reports.html">รายงาน</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>การชำระเงิน</h2>
+        <button id="addPaymentBtn">บันทึกการชำระเงิน</button>
+        <table>
+            <thead>
+                <tr>
+                    <th>ชื่อผู้เช่า</th>
+                    <th>สถานที่เช่า</th>
+                    <th>วันที่ชำระ</th>
+                    <th>จำนวนเงิน (บาท)</th>
+                    <th>การจัดการ</th>
+                </tr>
+            </thead>
+            <tbody id="paymentTable">
+                <!-- รายการการชำระเงินจะแสดงที่นี่ -->
+            </tbody>
+        </table>
+    </main>
+    <!-- ฟอร์มสำหรับบันทึก/แก้ไขการชำระเงิน -->
+    <div id="paymentForm" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closePaymentForm">&times;</span>
+            <h2 id="paymentFormTitle">บันทึกการชำระเงิน</h2>
+            <label>ผู้เช่า:</label>
+            <select id="paymentTenant">
+                <!-- รายการผู้เช่าจะแสดงที่นี่ -->
+            </select>
+            <label>วันที่ชำระ:</label>
+            <input type="date" id="paymentDate">
+            <label>จำนวนเงิน (บาท):</label>
+            <input type="number" id="paymentAmount">
+            <button id="savePayment">บันทึก</button>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

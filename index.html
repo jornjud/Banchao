@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ระบบจัดการบ้านเช่า - แดชบอร์ด</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header>
+        <h1>ระบบจัดการบ้านเช่า</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">แดชบอร์ด</a></li>
+                <li><a href="tenants.html">ผู้เช่า</a></li>
+                <li><a href="properties.html">สถานที่เช่า</a></li>
+                <li><a href="payments.html">การชำระเงิน</a></li>
+                <li><a href="overdue.html">ค้างชำระ</a></li>
+                <li><a href="reports.html">รายงาน</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <h2>แดชบอร์ด</h2>
+        <div class="dashboard">
+            <div class="card">
+                <h3>ผู้เช่าทั้งหมด</h3>
+                <p id="totalTenants">0</p>
+            </div>
+            <div class="card">
+                <h3>สถานที่เช่าทั้งหมด</h3>
+                <p id="totalProperties">0</p>
+            </div>
+            <div class="card">
+                <h3>รายได้เดือนนี้</h3>
+                <p id="monthlyIncome">0 บาท</p>
+            </div>
+            <div class="card">
+                <h3>ผู้ค้างชำระ</h3>
+                <p id="overdueTenants">0</p>
+            </div>
+        </div>
+        <button id="importDataBtn">นำเข้าข้อมูล</button>
+        <button id="exportDataBtn">ส่งออกข้อมูล</button>
+        <input type="file" id="importFile" style="display:none;">
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>
