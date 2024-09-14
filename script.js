@@ -598,11 +598,49 @@ function generateOccupancyReport() {
     reportContent.innerHTML = report;
 }
 
+// เพิ่มฟังก์ชันนี้ก่อนฟังก์ชัน initReportButtons()
+function generateRentIncomeReport() {
+    const tenants = getData('tenants');
+    const payments = getData('payments');
+    const reportContent = document.getElementById('reportContent');
+
+    let rentIncome = {};
+    let totalIncome = 0;
+
+    tenants.forEach(tenant => {
+        rentIncome[tenant.id] = {
+            name: tenant.name,
+            income: 0
+        };
+    });
+
+    payments.forEach(payment => {
+        if (rentIncome[payment.tenantId]) {
+            rentIncome[payment.tenantId].income += payment.amount;
+            totalIncome += payment.amount;
+        }
+    });
+
+    let report = '<h3>รายงานยอดรายรับค่าเช่า</h3><table><tr><th>ชื่อผู้เช่า</th><th>ยอดรายรับค่าเช่า (บาท)</th></tr>';
+    
+    for (const [tenantId, data] of Object.entries(rentIncome)) {
+        if (data.income > 0) {
+            report += `<tr><td>${data.name}</td><td>${data.income.toFixed(2)}</td></tr>`;
+        }
+    }
+
+    report += `<tr><th>ยอดรวมทั้งหมด</th><th>${totalIncome.toFixed(2)}</th></tr>`;
+    report += '</table>';
+
+    reportContent.innerHTML = report;
+}
+
 // เพิ่ม event listeners สำหรับปุ่มรายงานต่างๆ
 function initReportButtons() {
     document.getElementById('incomeReportBtn').addEventListener('click', generateIncomeReport);
     document.getElementById('overdueReportBtn').addEventListener('click', generateOverdueReport);
     document.getElementById('occupancyReportBtn').addEventListener('click', generateOccupancyReport);
+    document.getElementById('rentIncomeReportBtn').addEventListener('click', generateRentIncomeReport);
 }
 
 // เริ่มต้นการทำงาน
